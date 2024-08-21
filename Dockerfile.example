@@ -1,0 +1,29 @@
+FROM public.ecr.aws/lambda/ruby:3.2
+
+# General packages
+RUN yum update -y \
+  && yum install -y \
+    amazon-linux-extras \
+    gcc-c++ \
+    make \
+    git \
+  && amazon-linux-extras install -y epel \
+  && yum clean all
+
+# Apache Arrow
+RUN yum update -y \
+  && yum install -y https://apache.jfrog.io/artifactory/arrow/amazon-linux/2/apache-arrow-release-latest.rpm \
+  && yum install -y --enablerepo=epel arrow-devel arrow-glib-devel arrow-dataset-devel arrow-dataset-glib-devel \
+  && yum clean all
+
+# Update bundler
+RUN gem update bundler
+
+# Install gems
+COPY Gemfile Gemfile.lock athena-udf.gemspec ${LAMBDA_TASK_ROOT}
+COPY lib/athena-udf/version.rb ${LAMBDA_TASK_ROOT}/lib/athena-udf/version.rb
+RUN bundle install --without development --path vendor/bundle
+
+COPY . ${LAMBDA_TASK_ROOT}
+
+CMD ["example.SimpleVarcharUDF.lambda_handler"]
