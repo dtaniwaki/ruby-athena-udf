@@ -16,6 +16,7 @@ GEM
     diff-lcs (1.5.1)
     extpp (0.1.1)
     fiddle (1.1.2)
+    gem-release (2.2.2)
     gio2 (4.2.2)
       fiddle
       gobject-introspection (= 4.2.2)
@@ -80,6 +81,7 @@ PLATFORMS
 
 DEPENDENCIES
   athena-udf!
+  gem-release (~> 2.2)
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)

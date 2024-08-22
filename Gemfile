@@ -10,4 +10,6 @@ group :development, :test do
   gem 'rspec', '~> 3.0'
 
   gem 'rubocop', '~> 1.21'
+
+  gem 'gem-release', '~> 2.2'
 end
