@@ -6,15 +6,23 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Ruby ${{ matrix.ruby }}
     strategy:
+      fail-fast: false
       matrix:
         ruby:
           - '3.3.4'
           - '3.2.5'
     steps:
     - uses: actions/checkout@v4
+    - name: Set up packages
+      run: |
+        apt install -y -V ca-certificates lsb-release wget
+        wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
+        apt install -y -V ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
+        apt update
+        apt install -y -V libarrow-dev libarrow-glib-dev libarrow-dataset-dev libarrow-dataset-glib-dev
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
