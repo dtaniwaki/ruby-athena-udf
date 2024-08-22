@@ -25,7 +25,7 @@ $ gem install athena-udf
 Just make a subclass of `AthenaUDF::BaseUDF` and implement a concrete function logic.
 
 ```rb
-require "athena_udf"
+require "athena-udf"
 
 class SimpleVarcharUDF < AthenaUDF::BaseUDF
   def self.handle_athena_record(_input_schema, _output_schema, record)
@@ -67,6 +67,7 @@ You can try the example with the following steps.
 First, push a container image to Amazon ECR:
 
 ```sh
+$ aws ecr get-login-password | docker login --username AWS --password-stdin https://<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
 $ docker build --platform=linux/amd64 -t <ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/athena-udf-test -f Dockerfile.example .
 $ docker push <ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/athena-udf-test
 ```
