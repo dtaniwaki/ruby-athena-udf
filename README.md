@@ -76,7 +76,7 @@ Then, create a lambda function with the CLI:
 ```sh
 $ aws iam create-role --role-name athena-udf-simple-varchar --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]}'
 $ aws iam attach-role-policy --role-name athena-udf-simple-varchar --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-$ aws lambda create-function --function-name athena-udf-simple-varchar --runtime ruby3.2 --handler example.SimpleVarcharUDF.lambda_handler --role arn:aws:iam::<ACCOUNT_ID>:role/athena-udf-simple-varchar --code ImageUri=<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/athena-udf-test:latest --publish
+$ aws lambda create-function --function-name athena-udf-simple-varchar --package-type Image --role arn:aws:iam::<ACCOUNT_ID>:role/athena-udf-simple-varchar --code ImageUri=<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/athena-udf-test:latest --publish
 ```
 
 ## Contributing
@@ -86,3 +86,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/dtaniw
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
