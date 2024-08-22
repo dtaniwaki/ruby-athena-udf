@@ -22,7 +22,9 @@ RUN gem update bundler
 # Install gems
 COPY Gemfile Gemfile.lock athena-udf.gemspec ${LAMBDA_TASK_ROOT}
 COPY lib/athena-udf/version.rb ${LAMBDA_TASK_ROOT}/lib/athena-udf/version.rb
-RUN bundle install --without development --path vendor/bundle
+ENV GEM_HOME=${LAMBDA_TASK_ROOT}
+RUN bundle config set --local without development \
+  && bundle install
 
 COPY . ${LAMBDA_TASK_ROOT}
 
