@@ -41,9 +41,9 @@ module AthenaUDF
       input_records_data = Base64.decode64(event['inputRecords']['records'])
       read_record_batches(input_schema_data, input_records_data) do |input_schema, record_batch|
         output_builder.append_records(
-          record_batch.each_record.map { |record|
+          record_batch.each_record.map do |record|
             handle_athena_record(input_schema, output_schema, record)
-          }
+          end,
         )
       end
 
