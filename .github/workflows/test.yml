@@ -34,4 +34,7 @@ jobs:
       run: bundle exec rspec
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
+      with:
+        parallel: true
+        flag-name: "Ruby ${{ matrix.ruby }}"
 
