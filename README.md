@@ -1,6 +1,7 @@
 # AthenaUDF
 
 [![Gem Version][gem-image]][gem-link]
+[![Coverage Status][cov-image]][cov-link]
 
 Ruby-version Athena User Defined Function (UDF).
 
@@ -92,4 +93,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 [gem-image]:   https://badge.fury.io/rb/athena-udf.svg
 [gem-link]:    http://badge.fury.io/rb/athena-udf
-
+[cov-image]:   https://coveralls.io/repos/dtaniwaki/ruby-athena-udf/badge.png
+[cov-link]:    https://coveralls.io/r/dtaniwaki/ruby-athena-udf
