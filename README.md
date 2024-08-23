@@ -1,5 +1,7 @@
 # AthenaUDF
 
+[![Gem Version][gem-image]][gem-link]
+
 Ruby-version Athena User Defined Function (UDF).
 
 This gem is highly inspired by [the Python-version Athena UDF](https://github.com/dmarkey/python-athena-udf).
@@ -87,4 +89,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/dtaniw
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+[gem-image]:   https://badge.fury.io/rb/athena-udf.svg
+[gem-link]:    http://badge.fury.io/rb/athena-udf
 
