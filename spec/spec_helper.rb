@@ -7,7 +7,7 @@ resultset_path = SimpleCov::ResultMerger.resultset_path
 FileUtils.rm resultset_path if File.exist? resultset_path
 SimpleCov.use_merging true
 SimpleCov.at_exit do
-  SimpleCov.command_name "fork-#{$$}"
+  SimpleCov.command_name "fork-#{$PROCESS_ID}"
   SimpleCov.result.format!
 end
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[

@@ -68,4 +68,15 @@ RSpec.describe AthenaUDF::BaseUDF do
       expect(klass.lambda_handler(event:, context:)).to eq(expected)
     end
   end
+  context('PingRequest') do
+    it 'returns a response successfully' do
+      event = {
+        '@type' => 'Foo',
+      }
+      context = {}
+      expect do
+        klass.lambda_handler(event:, context:)
+      end.to raise_error(RuntimeError, 'Unknown event type Foo from Athena')
+    end
+  end
 end
