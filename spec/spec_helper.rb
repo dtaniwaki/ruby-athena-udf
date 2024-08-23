@@ -1,5 +1,22 @@
 # frozen_string_literal: true
 
+require 'rubygems'
+require 'simplecov'
+
+resultset_path = SimpleCov::ResultMerger.resultset_path
+FileUtils.rm resultset_path if File.exist? resultset_path
+SimpleCov.use_merging true
+SimpleCov.at_exit do
+  SimpleCov.command_name "fork-#{$$}"
+  SimpleCov.result.format!
+end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+]
+SimpleCov.start do
+  add_filter 'spec/'
+end
+
 require 'athena_udf'
 
 RSpec.configure do |config|
