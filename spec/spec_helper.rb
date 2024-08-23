@@ -10,8 +10,13 @@ SimpleCov.at_exit do
   SimpleCov.command_name "fork-#{$PROCESS_ID}"
   SimpleCov.result.format!
 end
+SimpleCov::Formatter::LcovFormatter.config do |config|
+  config.report_with_single_file = true
+  config.single_report_path = 'coverage/lcov.info'
+end
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::LcovFormatter,
 ]
 SimpleCov.start do
   add_filter 'spec/'
