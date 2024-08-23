@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'simplecov'
+require 'simplecov-lcov'
 
 resultset_path = SimpleCov::ResultMerger.resultset_path
 FileUtils.rm resultset_path if File.exist? resultset_path
