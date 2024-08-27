@@ -4,11 +4,15 @@ require 'securerandom'
 require 'base64'
 require 'tempfile'
 require 'arrow'
+require 'logger'
 require_relative 'utils'
 
 module AthenaUDF
   class BaseUDF
     extend AthenaUDF::Utils
+
+    @@logger = Logger.new($stdout)
+    @@logger.level = Logger.const_get(ENV.fetch('LOG_LEVEL', 'WARN').upcase)
 
     def self.lambda_handler(event:, context:) # rubocop:disable Lint/UnusedMethodArgument
       incoming_type = event['@type']
@@ -40,6 +44,7 @@ module AthenaUDF
       input_schema_data = Base64.decode64(event['inputRecords']['schema'])
       input_records_data = Base64.decode64(event['inputRecords']['records'])
       read_record_batches(input_schema_data, input_records_data) do |input_schema, record_batch|
+        logger.info("Processing #{record_batch.size} records")
         output_builder.append_records(
           record_batch.each_record.map do |record|
             handle_athena_record(input_schema, output_schema, record)
@@ -68,6 +73,10 @@ module AthenaUDF
 
     def self.handle_athena_record(input_schema, output_schema, records)
       raise NotImplementedError
+    end
+
+    def self.logger
+      @@logger
     end
   end
 end
