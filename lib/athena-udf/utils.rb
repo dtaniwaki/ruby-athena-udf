@@ -61,12 +61,13 @@ module AthenaUDF
       found_count = 0
       start_index = 0
       0.upto(size - 4).each do |i|
-        has_ffff = bytes.slice(i, 4) == [255, 255, 255, 255]
+        has_ffff = bytes.slice(i, 4) == "\xFF\xFF\xFF\xFF".b
+
         found_count += 1 if has_ffff
-        if found_count == 2
-          start_index = i + 4
-          break
-        end
+        next unless found_count == 2
+
+        start_index = i + 4
+        break
       end
 
       start_index
