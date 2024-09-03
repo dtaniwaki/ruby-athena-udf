@@ -30,11 +30,11 @@ module AthenaUDF
       end
     end
 
-    def get_schema_bytes(schema, record_batch)
+    def get_schema_bytes(schema)
       buffer = Arrow::ResizableBuffer.new(0)
       Arrow::BufferOutputStream.open(buffer) do |output|
         Arrow::RecordBatchStreamWriter.open(output, schema) do |writer|
-          writer.write_record_batch(record_batch)
+          # noop
         end
 
         bytes = buffer.data.to_s

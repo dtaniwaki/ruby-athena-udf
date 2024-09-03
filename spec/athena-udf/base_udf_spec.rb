@@ -35,12 +35,12 @@ RSpec.describe AthenaUDF::BaseUDF do
     it 'returns a response successfully' do
       input_schema = Arrow::Schema.new(s: :string, x: :int32)
       input_table = Arrow::Table.new(input_schema, [['FooBar', 1], ['Xyz', 2]])
-      input_schema_bytes = get_schema_bytes(input_schema, input_table.each_record_batch.first)
+      input_schema_bytes = get_schema_bytes(input_schema)
       input_records_bytes = get_record_batch_bytes(input_schema, input_table.each_record_batch.first)
 
       output_schema = Arrow::Schema.new(s: :string)
       output_table = Arrow::Table.new(output_schema, [['foobar'], ['xyz']])
-      output_schema_bytes = get_schema_bytes(output_schema, output_table.each_record_batch.first)
+      output_schema_bytes = get_schema_bytes(output_schema)
       output_records_bytes = get_record_batch_bytes(output_schema, output_table.each_record_batch.first)
 
       event = {
