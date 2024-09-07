@@ -2,6 +2,9 @@
 
 module AthenaUDF
   module Utils
+    SEPARATOR = "\xFF\xFF\xFF\xFF".b
+    SEPARATOR_SIZE = SEPARATOR.bytesize
+
     def read_record_batches(schema_data, record_batch_data)
       buffer = Arrow::ResizableBuffer.new(schema_data.bytes.size + record_batch_data.bytes.size)
       Arrow::BufferOutputStream.open(buffer) do |output|
@@ -38,8 +41,8 @@ module AthenaUDF
         end
 
         bytes = buffer.data.to_s
-        last_index = bytes.index("\xFF\xFF\xFF\xFF".b, 4)
-        bytes[4...last_index]
+        last_index = bytes.index(SEPARATOR, SEPARATOR_SIZE)
+        bytes[SEPARATOR_SIZE...last_index]
       end
     end
 
@@ -51,7 +54,7 @@ module AthenaUDF
         end
 
         bytes = buffer.data.to_s
-        start_index = bytes.index("\xFF\xFF\xFF\xFF".b, 4) + 4
+        start_index = bytes.index(SEPARATOR, SEPARATOR_SIZE) + SEPARATOR_SIZE
         bytes[start_index..]
       end
     end
