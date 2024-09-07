@@ -38,8 +38,8 @@ module AthenaUDF
         end
 
         bytes = buffer.data.to_s
-        start_index = get_record_batch_index(bytes)
-        bytes[4..start_index - 5]
+        last_index = bytes.index("\xFF\xFF\xFF\xFF".b, 4)
+        bytes[4...last_index]
       end
     end
 
@@ -51,26 +51,9 @@ module AthenaUDF
         end
 
         bytes = buffer.data.to_s
-        start_index = get_record_batch_index(bytes)
+        start_index = bytes.index("\xFF\xFF\xFF\xFF".b, 4) + 4
         bytes[start_index..]
       end
-    end
-
-    def get_record_batch_index(bytes)
-      size = bytes.size
-      found_count = 0
-      start_index = 0
-      0.upto(size - 4).each do |i|
-        has_ffff = bytes.slice(i, 4) == "\xFF\xFF\xFF\xFF".b
-
-        found_count += 1 if has_ffff
-        next unless found_count == 2
-
-        start_index = i + 4
-        break
-      end
-
-      start_index
     end
   end
 end
