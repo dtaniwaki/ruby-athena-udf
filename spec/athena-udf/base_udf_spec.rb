@@ -7,7 +7,7 @@ RSpec.describe AthenaUDF::BaseUDF do
 
   let(:klass) do
     Class.new(AthenaUDF::BaseUDF) do
-      def self.handle_athena_record(_input_schema, _output_schema, record)
+      def handle_athena_record(_input_schema, _output_schema, record)
         [record[0].downcase]
       end
     end
@@ -68,8 +68,8 @@ RSpec.describe AthenaUDF::BaseUDF do
       expect(klass.lambda_handler(event:, context:)).to eq(expected)
     end
   end
-  context('PingRequest') do
-    it 'returns a response successfully' do
+  context('Unknown event type') do
+    it 'raises an exception' do
       event = {
         '@type' => 'Foo',
       }

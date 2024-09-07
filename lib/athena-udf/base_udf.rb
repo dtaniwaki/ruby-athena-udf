@@ -9,33 +9,43 @@ require_relative 'utils'
 
 module AthenaUDF
   class BaseUDF
-    extend AthenaUDF::Utils
+    include AthenaUDF::Utils
 
-    @@logger = Logger.new($stdout)
-    @@logger.level = Logger.const_get(ENV.fetch('LOG_LEVEL', 'WARN').upcase)
+    attr_reader :logger
 
-    def self.lambda_handler(event:, context:) # rubocop:disable Lint/UnusedMethodArgument
+    def self.lambda_handler(event:, context:)
+      instance = new(event:, context:)
       incoming_type = event['@type']
       if incoming_type == 'PingRequest'
-        return handle_ping(event)
+        return instance.handle_ping(event)
       elsif incoming_type == 'UserDefinedFunctionRequest'
-        return handle_udf_request(event)
+        return instance.handle_udf_request(event)
       end
 
       raise "Unknown event type #{incoming_type} from Athena"
     end
 
-    def self.handle_ping(event)
+    # About capabilities: https://github.com/awslabs/aws-athena-query-federation/blob/f52d929a109099a1e7180fa242e26331137ed84c/athena-federation-sdk/src/main/java/com/amazonaws/athena/connector/lambda/handlers/FederationCapabilities.java#L29-L32
+    def self.capabilities
+      1
+    end
+
+    def initialize(event:, context:) # rubocop:disable Lint/UnusedMethodArgument
+      @logger = Logger.new($stdout)
+      @logger.level = Logger.const_get(ENV.fetch('LOG_LEVEL', 'WARN').upcase)
+    end
+
+    def handle_ping(event)
       {
         '@type' => 'PingResponse',
         'catalogName' => 'event',
         'queryId' => event['queryId'],
         'sourceType' => 'athena_udf',
-        'capabilities' => capabilities,
+        'capabilities' => self.class.capabilities,
       }
     end
 
-    def self.handle_udf_request(event)
+    def handle_udf_request(event)
       # Cannot find a way to write Arrow::RecordBatch to a buffer directly in Ruby.
 
       output_schema = read_schema(Base64.decode64(event['outputSchema']['schema']))
@@ -66,17 +76,8 @@ module AthenaUDF
       }
     end
 
-    # About capabilities: https://github.com/awslabs/aws-athena-query-federation/blob/f52d929a109099a1e7180fa242e26331137ed84c/athena-federation-sdk/src/main/java/com/amazonaws/athena/connector/lambda/handlers/FederationCapabilities.java#L29-L32
-    def self.capabilities
-      1
-    end
-
-    def self.handle_athena_record(input_schema, output_schema, records)
+    def handle_athena_record(input_schema, output_schema, records)
       raise NotImplementedError
-    end
-
-    def self.logger
-      @@logger
     end
   end
 end
