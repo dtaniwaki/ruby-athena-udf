@@ -83,6 +83,15 @@ $ aws iam attach-role-policy --role-name athena-udf-simple-varchar --policy-arn 
 $ aws lambda create-function --function-name athena-udf-simple-varchar --package-type Image --role arn:aws:iam::<ACCOUNT_ID>:role/athena-udf-simple-varchar --code ImageUri=<ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/athena-udf-test:latest --publish
 ```
 
+## Development
+
+You can use the dev container image, which includes necessary packages, to develop this library.
+
+```sh
+$ docker build -t ruby-athena-udf-dev -f Dockerfile.dev .
+$ docker run -v $PWD:/src -it ruby-athena-udf-dev
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/dtaniwaki/ruby-athena-udf.

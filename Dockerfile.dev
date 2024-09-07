@@ -1,0 +1,27 @@
+FROM ruby:3.2
+
+# General packages
+RUN apt-get update -y \
+  && apt-get install -y \
+    build-essential \
+    ca-certificates \
+    lsb-release \
+    wget \
+  && apt-get clean
+
+# Apache Arrow
+RUN apt-get update -y \
+  && wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb \
+  && apt install -y ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb \
+  && apt-get update -y \
+  && apt-get install -y \
+    libarrow-dev \
+    libarrow-glib-dev \
+  && apt-get clean
+
+# Update bundler
+RUN gem update bundler
+
+WORKDIR /src
+
+CMD ["/bin/bash"]
