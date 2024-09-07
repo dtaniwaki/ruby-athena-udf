@@ -24,6 +24,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
+    - "scripts/benchmark.rb"
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
@@ -36,4 +37,8 @@ Style/TrailingCommaInHashLiteral:
 
 Style/ClassVars:
   Enabled: false
+
+Naming/VariableNumber:
+  Exclude:
+    - "scripts/benchmark.rb"
 
