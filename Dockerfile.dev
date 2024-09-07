@@ -25,4 +25,8 @@ RUN gem update bundler
 
 WORKDIR /src
 
+COPY Gemfile Gemfile.lock athena-udf.gemspec /src
+COPY lib/athena-udf/version.rb /src/lib/athena-udf/version.rb
+RUN bundle install
+
 CMD ["/bin/bash"]
