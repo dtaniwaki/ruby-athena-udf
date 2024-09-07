@@ -31,7 +31,7 @@ Just make a subclass of `AthenaUDF::BaseUDF` and implement a concrete function l
 require "athena-udf"
 
 class SimpleVarcharUDF < AthenaUDF::BaseUDF
-  def self.handle_athena_record(_input_schema, _output_schema, record)
+  def handle_athena_record(_input_schema, _output_schema, record)
     [record[0].downcase]
   end
 end
