@@ -28,5 +28,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'base64'
   spec.add_dependency 'csv'
-  spec.add_dependency 'red-arrow', ['~> 12.0.1', '< 20.0.0']
+  spec.add_dependency 'red-arrow', ['>= 12.0.0', '< 20.0.0']
 end
