@@ -1,20 +1,36 @@
-FROM public.ecr.aws/lambda/ruby:3.2
-
-# General packages
-RUN yum update -y \
-  && yum install -y \
-    amazon-linux-extras \
-    gcc-c++ \
-    make \
-    git \
-  && amazon-linux-extras install -y epel \
-  && yum clean all
+# Can NOT install apache-arrow on the amazonlinux:2023-minimal image,
+# so install the ruby directly on amazonlinux:2023.
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023 AS builder
 
 # Apache Arrow
-RUN yum update -y \
-  && yum install -y https://apache.jfrog.io/artifactory/arrow/amazon-linux/2/apache-arrow-release-latest.rpm \
-  && yum install -y --enablerepo=epel arrow-devel arrow-glib-devel arrow-dataset-devel arrow-dataset-glib-devel \
-  && yum clean all
+RUN dnf upgrade -y --releasever=latest \
+  && dnf install -y https://apache.jfrog.io/artifactory/arrow/amazon-linux/$(cut -d: -f6 /etc/system-release-cpe)/apache-arrow-release-latest.rpm \
+  && dnf install -y arrow-devel arrow-glib-devel arrow-dataset-devel arrow-dataset-glib-devel
+
+############
+
+FROM public.ecr.aws/lambda/ruby:3.3
+
+COPY --from=builder /usr/include/parquet/arrow/ /usr/include/parquet/arrow/
+COPY --from=builder /usr/include/arrow* /usr/include/
+COPY --from=builder /usr/share/gdb/auto-load/usr/lib64/libarrow.so* /usr/share/gdb/auto-load/usr/lib64/
+COPY --from=builder /usr/share/licenses/arrow* /usr/share/licenses/
+COPY --from=builder /usr/share/doc/arrow* /usr/share/doc/
+COPY --from=builder /usr/share/arrow* /usr/share/
+COPY --from=builder /usr/share/vala/vapi/arrow* /usr/share/vala/vapi/
+COPY --from=builder /usr/lib64/libarrow* /usr/lib64/
+COPY --from=builder /usr/lib64/pkgconfig/arrow* /usr/lib64/pkgconfig/
+COPY --from=builder /usr/lib64/libarrow* /usr/lib64/libarrow/
+COPY --from=builder /usr/lib64/cmake/Arrow/ /usr/lib64/cmake/Arrow/
+
+# General packages
+RUN dnf upgrade -y --releasever=latest \
+  && dnf install -y \
+    gcc-c++ \
+    glib2-devel \
+    make \
+    git \
+  && dnf clean all
 
 # Update bundler
 RUN gem update bundler
@@ -29,3 +45,4 @@ RUN bundle config set --local without development \
 COPY . ${LAMBDA_TASK_ROOT}
 
 CMD ["example.SimpleVarcharUDF.lambda_handler"]
+
