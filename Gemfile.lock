@@ -11,20 +11,10 @@ GEM
   specs:
     ast (2.4.2)
     base64 (0.2.0)
-<<<<<<< Updated upstream
     benchmark (0.3.0)
-    bigdecimal (3.1.8)
-    csv (3.3.0)
-    diff-lcs (1.5.1)
-||||||| Stash base
-    bigdecimal (3.1.8)
-    csv (3.3.0)
-    diff-lcs (1.5.1)
-=======
     bigdecimal (3.1.9)
     csv (3.3.2)
     diff-lcs (1.6.0)
->>>>>>> Stashed changes
     docile (1.4.1)
     extpp (0.1.1)
     fiddle (1.1.6)
