@@ -15,7 +15,7 @@ RUN dnf upgrade -y --releasever=latest \
 
 # Install Ruby and AWS Lambda Ruby Runtime Interface Client
 ARG RUBY_VERSION=3.3.7
-ARG RUBY_MINOR_VERSION=3.2
+ARG RUBY_MINOR_VERSION=3.3
 RUN mkdir -p /tmp/src \
   && cd /tmp/src \
   && curl -O https://cache.ruby-lang.org/pub/ruby/${RUBY_MINOR_VERSION}/ruby-${RUBY_VERSION}.tar.gz \
@@ -26,6 +26,7 @@ RUN mkdir -p /tmp/src \
   && make install \
   && gem install bundler \
   && rm -fr $PWD
+ENV LAMBDA_RUNTIME_DIR=/var/runtime LAMBDA_TASK_ROOT=/var/task
 RUN gem install aws_lambda_ric
 
 # Update bundler
