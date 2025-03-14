@@ -26,8 +26,9 @@ RUN mkdir -p /tmp/src \
   && make install \
   && gem install bundler \
   && rm -fr $PWD
-ENV LAMBDA_RUNTIME_DIR=/var/runtime LAMBDA_TASK_ROOT=/var/task
 RUN gem install aws_lambda_ric
+ENV LAMBDA_RUNTIME_DIR=/var/runtime LAMBDA_TASK_ROOT=/var/task
+WORKDIR $LAMBDA_TASK_ROOT
 
 # Update bundler
 RUN gem update bundler
