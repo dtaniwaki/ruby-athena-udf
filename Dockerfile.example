@@ -28,11 +28,6 @@ RUN mkdir -p /tmp/src \
   && rm -fr $PWD
 RUN gem install aws_lambda_ric
 
-# Lambda Insights
-RUN curl -O https://lambda-insights-extension.s3-ap-northeast-1.amazonaws.com/amazon_linux/lambda-insights-extension.rpm \
-  && rpm -U lambda-insights-extension.rpm \
-  && rm -f lambda-insights-extension.rpm
-
 # Update bundler
 RUN gem update bundler
 
