@@ -1,0 +1,56 @@
+name: Build docker images
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+env:
+  IMAGE_NAME: ruby-athena-udf:${{ github.sha }}
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: actions/cache@v4
+        with:
+          path: |
+            /tmp/.buildx-cache
+            /tmp/.trivy-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}-${{ github.event.number }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}-
+            ${{ runner.os }}-buildx-
+      - uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          provenance: false
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          tags: ${{ env.IMAGE_NAME }}
+          load: true
+      # Workaround for a dockle issue.
+      # See https://github.com/goodwithtech/dockle/issues/256#issuecomment-2208223337
+      - name: Lint container using Dockle
+        uses: docker://goodwithtech/dockle:v0.4.15
+        with:
+          args: '--exit-code 1 --exit-level warn -i CIS-DI-0010 -i CIS-DI-0001 --format list ${{ env.IMAGE_NAME }}'
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          scanners: 'vuln'
+          cache-dir: /tmp/.trivy-cache
+      - name: Move buildx cache
+        if: ${{ always() }}
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
