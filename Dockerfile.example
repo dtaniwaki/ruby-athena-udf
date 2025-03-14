@@ -41,8 +41,7 @@ RUN bundle config set --local without development:test \
   && bundle install
 
 COPY . ${LAMBDA_TASK_ROOT}
-COPY docker/lambda-entrypoint.sh /
 
-ENTRYPOINT ["/lambda-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 CMD ["example.SimpleVarcharUDF.lambda_handler"]
 
