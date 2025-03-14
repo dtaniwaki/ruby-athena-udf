@@ -39,10 +39,11 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
-    red-arrow (12.0.1)
+    red-arrow (19.0.1)
       bigdecimal (>= 3.1.0)
+      csv
       extpp (>= 0.1.1)
-      gio2 (>= 3.5.0)
+      gio2 (>= 4.2.3)
       native-package-installer
       pkg-config
     regexp_parser (2.10.0)
