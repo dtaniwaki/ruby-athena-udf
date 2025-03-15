@@ -6,6 +6,10 @@ RUN microdnf upgrade -y --releasever=latest \
   && microdnf install -y dnf \
   && microdnf clean all
 
+RUN dnf upgrade -y --releasever=latest \
+  && dnf install -y git \
+  && dnf clean all
+
 # Apache Arrow
 ARG ARROW_VERSION=19.0.1
 RUN dnf upgrade -y --releasever=latest \
