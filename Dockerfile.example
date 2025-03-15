@@ -6,16 +6,19 @@ RUN microdnf upgrade -y --releasever=latest \
   && microdnf install -y dnf \
   && microdnf clean all
 
-# Install common packages.
-RUN dnf upgrade -y --releasever=latest \
-  && dnf install -y git \
-  && dnf clean all
-
 # Apache Arrow
 ARG ARROW_VERSION=19.0.1
 RUN dnf upgrade -y --releasever=latest \
   && dnf install -y https://apache.jfrog.io/artifactory/arrow/amazon-linux/2023/x86_64/Packages/apache-arrow-release-${ARROW_VERSION}-1.amzn2023.noarch.rpm \
   && dnf install -y arrow-devel arrow-glib-devel arrow-dataset-devel arrow-dataset-glib-devel \
+  && dnf clean all
+
+# Install common packages.
+RUN dnf upgrade -y --releasever=latest \
+  && dnf install -y \
+    gcc-c++ \
+    git \
+    make \
   && dnf clean all
 
 # Update bundler
