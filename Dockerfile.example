@@ -1,6 +1,10 @@
-# Can NOT install apache-arrow on the amazonlinux:2023-minimal image,
-# so install the ruby directly on amazonlinux:2023.
-FROM public.ecr.aws/amazonlinux/amazonlinux:2023
+FROM public.ecr.aws/lambda/ruby:3.3-x86_64
+
+# Standard dnf is necessary to install Apache Arrow.
+RUN microdnf upgrade -y --releasever=latest \
+  && microdnf remove -y microdnf-dnf \
+  && microdnf install -y dnf \
+  && microdnf clean all
 
 # Apache Arrow
 ARG ARROW_VERSION=19.0.1
@@ -9,26 +13,13 @@ RUN dnf upgrade -y --releasever=latest \
   && dnf install -y arrow-devel arrow-glib-devel arrow-dataset-devel arrow-dataset-glib-devel \
   && dnf clean all
 
+# Install common packages.
 RUN dnf upgrade -y --releasever=latest \
-  && dnf install -y git gcc gcc-c++ readline-devel openssl-devel libyaml-devel zlib-devel \
+  && dnf install -y \
+    gcc-c++ \
+    git \
+    make \
   && dnf clean all
-
-# Install Ruby and AWS Lambda Ruby Runtime Interface Client
-ARG RUBY_VERSION=3.3.7
-ARG RUBY_MINOR_VERSION=3.3
-RUN mkdir -p /tmp/src \
-  && cd /tmp/src \
-  && curl -O https://cache.ruby-lang.org/pub/ruby/${RUBY_MINOR_VERSION}/ruby-${RUBY_VERSION}.tar.gz \
-  && tar zxvf ruby-${RUBY_VERSION}.tar.gz \
-  && cd ruby-${RUBY_VERSION} \
-  && ./configure \
-  && make \
-  && make install \
-  && gem install bundler \
-  && rm -fr $PWD
-RUN gem install aws_lambda_ric
-ENV LAMBDA_RUNTIME_DIR=/var/runtime LAMBDA_TASK_ROOT=/var/task
-WORKDIR $LAMBDA_TASK_ROOT
 
 # Update bundler
 RUN gem update bundler
@@ -42,6 +33,5 @@ RUN bundle config set --local without development:test \
 
 COPY . ${LAMBDA_TASK_ROOT}
 
-ENTRYPOINT ["/usr/local/bin/aws_lambda_ric"]
 CMD ["example.SimpleVarcharUDF.lambda_handler"]
 
