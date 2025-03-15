@@ -33,6 +33,5 @@ RUN bundle config set --local without development:test \
 
 COPY . ${LAMBDA_TASK_ROOT}
 
-ENV RUBY_YJIT_ENABLE=1
 CMD ["example.SimpleVarcharUDF.lambda_handler"]
 
